@@ -16,12 +16,35 @@ To be consistent, I have been using the following user name and password.
 
 ## Install OS on boot device (SD Card)
 
-Launch Raspberry Pi Imager
+Launch [**Raspberry Pi Imager**](https://www.raspberrypi.com/software/)
+
+![RaspberryPi Imager](images\RaspberryPi_setup.png)
 
 Select your Raspberry Pi Device (_Raspberry Pi 3_), Operating System (I chose the recommended option, _Raspberry Pi OS (64-bit)_) and Storage Device (_SD Card_).
 
+Click `Next`
 
-Connect to Raspberry Pi using PuTTY.
+![RaspberryPi Imager Custom](images\RaspberryPi_setup_os_customization.png)
+
+Click `Edit Settings` and provide your Raspberry Pi a name, and provide a username `user` and password `user`. I suggest trying to configure your WIFI now using the `Configure Wireless LAN` option. Mine is York in this example. 
+
+![RaspberryPi Imager Customization General](images\RaspberryPi_setup_os_customization_gen.png)
+
+Go ahead and enable SSH under Services so we can connect using `user` `user` through [**PuTTY**](https://www.putty.org/).
+
+![RaspberryPi Imager Customization Services](images\RaspberryPi_setup_os_customization_services.png)
+
+
+It will take a few minutes to flash your SD Card. When it is complete, 
+
+## Connect to Raspberry Pi using PuTTY or with a monitor and keyboard.
+
+If connecting via [**PuTTY**](https://www.putty.org/) on your machine. Add your Raspberry Pi's IP address or Host Name.
+![Putty](images/putty.png)
+
+Log in. You will enter the username and then the password. The terminal will not show your password as you log in. Just type it in and press enter. 
+![Putty Login](images/putty_login.png)
+
 
 Check for Updates - *This will take a while*.
 
