@@ -3,6 +3,7 @@
 This is a Python-based project to capture temperature and humidity data using a Raspberry Pi. This repo includes the main script for data capture, setup instructions, and test scripts for development and debugging.
 
 ![Captured_data](docs/images/June25_data.png)
+<iframe src="docs/misc/June 25 Testing.html" width="100%" height="500px" title="June 25 Data Map"></iframe>
 
 ## 📦 Project Structure
 
