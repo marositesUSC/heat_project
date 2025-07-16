@@ -8,7 +8,7 @@ This is a Python-based project to capture temperature and humidity data using a 
 
 ```
 heat-project/
- |--- README.md          <-- You are here.
+ |--- README.md          &#8592; You are here.
  |--- src/               <-- Main  Python Scripts
  | |--- capture_data.py  <-- Main Script
  |--- test_scripts/      <-- tests
