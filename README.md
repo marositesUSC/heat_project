@@ -8,17 +8,17 @@ This is a Python-based project to capture temperature and humidity data using a 
 
 ```
 heat-project/
- |--- README.md          &#8592; You are here.
- |--- src/               <-- Main  Python Scripts
- | |--- capture_data.py  <-- Main Script
- |--- test_scripts/      <-- tests
- |--- data/              <-- Data Repo
- |--- docs/              <-- Setup instructions and images
- | |--- setup_instructions.md
+ |--- README.md                 <-- You are here.
+ |--- src/                      <-- Main  Python Scripts
+ | |--- capture_data.py         <-- Main Script
+ |--- test_scripts/             <-- tests
+ |--- data/                     <-- Data Repo
+ |--- docs/                     
+ | |--- setup_instructions.md   <-- Setup instructions
  | |--- images/
- |--- env/               <-- vitural environment for Python
- |--- requirement.txt    <-- Python dependencies
- |--- .gitignore         <-- 
+ |--- env/                      <-- vitural environment for Python
+ |--- requirement.txt           <-- Python dependencies
+ |--- .gitignore                
 ```
 
 
@@ -27,7 +27,7 @@ Assuming you have a Raspberry Pi all set up...
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/heat-project.git
+git clone https://github.com/marositesUSC/heat_project.git
 cd heat-project
 ```
 ### 2. Create and activate a virtual environment
