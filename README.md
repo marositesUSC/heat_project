@@ -3,7 +3,7 @@
 This is a Python-based project to capture temperature and humidity data using a Raspberry Pi. This repo includes the main script for data capture, setup instructions, and test scripts for development and debugging.
 
 ![Captured_data](docs/images/June25_data.png)
-<iframe src="https://github.com/marositesUSC/heat_project/blob/main/docs/misc/June%2025%20Testing.html" width="100%" height="500px" title="June 25 Data Map"></iframe>
+
 
 ## 📦 Project Structure
 
@@ -17,6 +17,7 @@ heat-project/
  |--- docs/                     
  | |--- setup_instructions.md   <-- Setup instructions
  | |--- images/
+ | |--- misc/
  |--- env/                      <-- vitural environment for Python
  |--- requirement.txt           <-- Python dependencies
  |--- .gitignore                
@@ -52,6 +53,9 @@ python src/capture_data.py
 Here is a basic wiring diagram for connecting the sensors to the 
 ![WiringDiagram](docs/images/)
 
+For temperature and humidity, we use **I<sup>2</sup>C** communication for the SHT3x sensors. 
+
+For location data, we connect via **UHAT** to an Adafruit Ultimate GPS moduel and **GSPD**. 
 
 More setup details can be found in [docs/setup_instructions.md](docs/setup_instructions.md).
 

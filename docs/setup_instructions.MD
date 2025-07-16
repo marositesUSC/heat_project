@@ -133,41 +133,54 @@ To start working with sensors we need to
 
 ## Connecting GPS Module
 
-Next check to make sure serial is enabled. # Should return /dev/serial0
+Next check to make sure serial is enabled. 
 
-ls /dev/serial0
+```bash
+ls /dev/serial0  
+```
+
+`dev/serial0` is a good response. 
+
 
 Now you can see the raw data the GPS module is passing over serial.
 
+```bash
 sudo cat /dev/serial0
+```
 
 To process that serial data, you need to install some software that understand the serial data.
 
 Install gpsd
 
+```bash
 sudo apt-get install gpsd gpsd-clients
-
-Y # to continue
+```
+`Y`  to continue
 
 We need to stop gpsd sockets and then disable them.
 
+```bash
 sudo systemctl stop gpsd.socket
-
 sudo systemctl disable gpsd.socket
+```
 
 After disabling the service, now we want to run it manually.
-
+```bash
 sudo gpsd /dev/serial0 -F /var/run/gpsd.sock
-
+```
 Now you can run the following command to get data.
 
-Cgps -s
+```bash
+gps -s
+```
 
-Ctrl C to exit.
+`Ctrl + C` to exit.
 
 And now we want this to start automatically on boot. So we must create an override file for the gpsd service.
 
+```bash
 sudo systemctl edit gpsd.service
+```
 
 Copy the following at the top of the file between two comments that say below this and above that.
 
@@ -194,7 +207,7 @@ sudo systemctl disable gpsd.socket
 Enable gpsd.service
 ```bash
 sudo systemctl enable gpsd.service
-
+```
 Start gpsd.service to test
 ```bash
 sudo systemctl start gpsd.service
@@ -209,7 +222,7 @@ journalctl -xeu gpsd.service
 ```
 Reboot the machine
 ```bash
-Sudo reboot
+sudo reboot
 ```
 Reconnect using PuTTY
 
@@ -219,7 +232,7 @@ Finally we need to make some changes to make sure we can parse the data with pyt
 
 Reboot the machine
 ```bash
-Sudo reboot
+sudo reboot
 ```
 Activate your virtual environment
 ```bash
