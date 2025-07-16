@@ -24,15 +24,15 @@ Select your Raspberry Pi Device (_Raspberry Pi 3_), Operating System (I chose th
 
 Click `Next`
 
-![RaspberryPi Imager Custom OS](images/RaspberryPi_setup_os_customization.png)
+![RaspberryPi Imager Custom OS](images/RaspberryPi_setup_OS_customization.png)
 
 Click `Edit Settings` and provide your Raspberry Pi a name, and provide a username `user` and password `user`. I suggest trying to configure your WIFI now using the `Configure Wireless LAN` option. Mine is York in this example. 
 
-![RaspberryPi Imager Customization General](images/RaspberryPi_setup_os_customization_gen.png)
+![RaspberryPi Imager Customization General](images/RaspberryPi_setup_OS_customization_gen.png)
 
 Go ahead and enable SSH under Services so we can connect using `user` `user` through [**PuTTY**](https://www.putty.org/).
 
-![RaspberryPi Imager Customization Services](images/RaspberryPi_setup_os_customization_services.png)
+![RaspberryPi Imager Customization Services](images/RaspberryPi_setup_OS_customization_services.png)
 
 
 It will take a few minutes to flash your SD Card. When it is complete, 
@@ -40,9 +40,11 @@ It will take a few minutes to flash your SD Card. When it is complete,
 ## Connect to Raspberry Pi using PuTTY or with a monitor and keyboard.
 
 If connecting via [**PuTTY**](https://www.putty.org/) on your machine. Add your Raspberry Pi's IP address or Host Name.
+
 ![Putty](images/putty.png)
 
-Log in. You will enter the username and then the password. The terminal will not show your password as you log in. Just type it in and press enter. 
+Log in. You will enter the username and then the password. The terminal will not show your password as you log in. Just type it in and press enter.
+
 ![Putty Login](images/putty_login.png)
 
 
@@ -73,6 +75,8 @@ python3 -m venv env
 ```
 
 This will take a minute, but will create a new virtual environment (env), or container, to store python packages. If you run the command ls you will see a new folder called env.
+
+![Virtual_environment](images/virtual_env_actiavate.png)
 
 You can activate your virtual env by running the command
 
