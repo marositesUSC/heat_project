@@ -18,21 +18,21 @@ To be consistent, I have been using the following user name and password.
 
 Launch [**Raspberry Pi Imager**](https://www.raspberrypi.com/software/)
 
-![RaspberryPi Imager](images\RaspberryPi_setup.png)
+![RaspberryPi Imager](images/RaspberryPi_setup.png)
 
 Select your Raspberry Pi Device (_Raspberry Pi 3_), Operating System (I chose the recommended option, _Raspberry Pi OS (64-bit)_) and Storage Device (_SD Card_).
 
 Click `Next`
 
-![RaspberryPi Imager Custom](images\RaspberryPi_setup_os_customization.png)
+![RaspberryPi Imager Custom OS](images/RaspberryPi_setup_os_customization.png)
 
 Click `Edit Settings` and provide your Raspberry Pi a name, and provide a username `user` and password `user`. I suggest trying to configure your WIFI now using the `Configure Wireless LAN` option. Mine is York in this example. 
 
-![RaspberryPi Imager Customization General](images\RaspberryPi_setup_os_customization_gen.png)
+![RaspberryPi Imager Customization General](images/RaspberryPi_setup_os_customization_gen.png)
 
 Go ahead and enable SSH under Services so we can connect using `user` `user` through [**PuTTY**](https://www.putty.org/).
 
-![RaspberryPi Imager Customization Services](images\RaspberryPi_setup_os_customization_services.png)
+![RaspberryPi Imager Customization Services](images/RaspberryPi_setup_os_customization_services.png)
 
 
 It will take a few minutes to flash your SD Card. When it is complete, 

@@ -4,6 +4,8 @@ This is a Python-based project to capture temperature and humidity data using a 
 
 ![Captured_data](docs/images/June25_data.png)
 
+![Biking](docs/images/initial_testing_01.jpg)
+
 
 ## 📦 Project Structure
 
@@ -25,7 +27,7 @@ heat-project/
 
 
 ## 🚀 Quick Start
-Assuming you have a Raspberry Pi all set up...
+If you have a Raspberry Pi all set up, you can start here. Otherwise, start [here](docs/setup_instructions.MD).
 ### 1. Clone the repository
 
 ```bash
