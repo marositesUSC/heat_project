@@ -4,7 +4,7 @@ Before you begin, it is helpful to download [**Raspberry Pi Imager**](https://ww
 
 ## Quick Note
 
-There are options for initial setup. The official documentation can be found [here](https://www.raspberrypi.com/documentation/computers/getting-started.html) and is great. You can install with keyboard and mouse, but I like to do the headless install. If you choose to do this make sure you when you image your SD card, you enter your WiFi credentials and enable SSH.
+There are options for initial setup. The official documentation can be found [here](https://www.raspberrypi.com/documentation/computers/getting-started.html) and is great. You can connect your Pi with keyboard and mouse, but I like to do the headless install. If you choose to do this make sure you when you image your SD card, you enter your WiFi credentials and enable SSH. I also ran into some issues connecting to WiFi automatically. You can follow my work around for that [here](correcting_wifi.md)
 
 To be consistent, I have been using the following user name and password.
 
@@ -37,9 +37,9 @@ Go ahead and enable SSH under Services so we can connect using `user` `user` thr
 
 It will take a few minutes to flash your SD Card. When it is complete, 
 
-## Connect to Raspberry Pi using PuTTY or with a monitor and keyboard.
+### Connect to Raspberry Pi using PuTTY or with a monitor and keyboard.
 
-If connecting via [**PuTTY**](https://www.putty.org/) on your machine. Add your Raspberry Pi's IP address or Host Name.
+If connecting via [**PuTTY**](https://www.putty.org/) on your machine. Add your Raspberry Pi's IP address or Host Name. You should have programmed the Host Name in the Imaging process. You can try to ping that device to get the IP address or you can just try to use the name. You may have to add `@local` to the end of the name like... `hostname@local`.
 
 ![Putty](images/putty.png)
 
@@ -48,67 +48,87 @@ Log in. You will enter the username and then the password. The terminal will not
 ![Putty Login](images/putty_login.png)
 
 
-Check for Updates - *This will take a while*.
+### Check for Updates - *This may take a while*.
 
 ```sh
 sudo apt update
-Sudo apt upgrade
+sudo apt upgrade
 ```
+You may be prompted to confirm or deny any installations. Type `Y` to confirm installation. 
 
-Open Raspberry Pi Software Configuration Tool 
+You can let it sit or watch the screen, it will likely take a few minutes. 
+![Updates](images/updates.png)
+**this could take 15 to 30 minutes dependening on your network.*
+
+### Open Raspberry Pi Software Configuration Tool 
+Next we need to inable some interface options so we can remote into the machine and communicate with sensors. 
 
 In the termianl type 
 ```bash
 raspi-config
 ```
 
-Enable VNC (to access it remotely through VNC Viewer), I<sup>2</sup>C (two-wire serial communication protocol used to connect temp and humidity sensors), and Serial (serial interface for GPS).
+### Enable VNC (to access it remotely through VNC Viewer).
+Navigate to ___
 
-Create our directory
+### Enable I<sup>2</sup>C (two-wire serial communication protocol used to connect temp and humidity sensors).
+Navigate to ___
+
+### Enable Serial (serial interface for GPS).
+Navigate to ___
+
+### Reboot
+If you are prompted, you can reboot the Pi. If not it is good practice to reboot now. Run the command `sudo restart`. 
+
+### Clone the directory from GitHub
+Once the Pi has restarted. Log in using PuTTy just as before. In the terminal you will be in the root directory for your user. If you are curious about what is in your current working directory, run the `ls` command to list all files and folders. 
+
+We will use git to clone our directory from online. 
 
 ```bash
-mkdir heat_project
+git clone https://github.com/marositesUSC/heat_project.git
 ```
-Create a virtual environment.
+Now if you run `ls` you will see a new folder named `heat_project`. Next you will run the `cd` command to move into our `heat_project` folder. 
 ```bash
-python3 -m venv env
+cd heat-project
 ```
 
-This will take a minute, but will create a new virtual environment (env), or container, to store python packages. If you run the command ls you will see a new folder called env.
+### Create and activate a virtual environment
+We will use virtual environments to keep our python packages tidy and make it easier to share and troubleshoot. Run the following command to create your virtual environment named `env`. 
+```bash
+python -m venv env
+```
+You will now see a new folder labeld `env` in the `heat_project` folder. This is your virtual environment. It will contain all the required Python libraries. 
 
-![Virtual_environment](images/virtual_env_actiavate.png)
-
-You can activate your virtual env by running the command
-
+From the `heat_project` folder. Run the following command to activate your virtual environment. 
 ```bash
 source env/bin/activate
 ```
+![Virtual_environment](images/virtual_env_actiavate.png)
+
+
 
 You will notice your environment out infront of your user@sensorname:
 
-You can deactivate the virtual environment by running the command `deactive` in the terminal, but keep it **activate** for now.
+You can deactivate the virtual environment by running the command `deactive` in the terminal, but keep it **activate** for now so we can install the dependencies and activate it any time in the future when you are trying to run our Python Scripts. 
 
-Install circuit python libraries – Credit to <https://learn.adafruit.com/circuitpython-on-raspberrypi-linux/installing-circuitpython-on-raspberry-pi>
+### 3. Install Dependencies
+In the cloned GitHub repository is a `requirements.txt` file. This file gives `pip` all of the required libraries for our project and installs them for us. Run the following command to install the required libraries. 
 
-cd ~
+```bash 
+pip install -r requirements.txt
+```
+Be on the lookout for any errors. 
 
-pip3 install --upgrade adafruit-python-shell
-
-wget <https://raw.githubusercontent.com/adafruit/Raspberry-Pi-Installer-Scripts/master/raspi-blinka.py>
-
-sudo -E env PATH=$PATH python3 raspi-blinka.py
-
-Y to reboot
-
-pip install RPi.GPIO # for some reason RPi.GPIO does not install and is needed.
+### Check to ensure I^2^C and SPI are configured. 
 
 Check I2C and SPI
 
+```bash
 ls /dev/i2c\* /dev/spi\*
+```
 
-you should see
-
-/dev/i2c-1 /dev/i2c-2 /dev/spidev0.0 /dev/spidev0.1
+You should see that the Pis is searching for devices at the following locations, `/dev/i2c-1 /dev/i2c-2 /dev/spidev0.0 /dev/spidev0.1`
 
 Blinka Test
 
@@ -270,6 +290,7 @@ pip install gpsd-py3
 Now we can proceed to data logging.
 
 # Datalogging
+Now that everything is working. We can kick off our `capture_data.py` scripts to start writing data. 
 
 # Executing Scripts
 
@@ -291,7 +312,7 @@ nmtui # NetworkManager TUI
 
 cd # change directory
 
-i2cdetect -y 1 # Check to see what address I^2^C devices are using.
+i2cdetect -y 1 # Check to see what address I2C devices are using.
 
 hostname -I # this will get your ip address.
 ```
