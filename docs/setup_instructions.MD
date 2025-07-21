@@ -1,4 +1,4 @@
-This document will walk you through installation of a Raspberry Pi and setting it up for our heat mapping project. Following it straight through will probably take between 1-2 hours. 
+This document will walk you through installation of a Raspberry Pi and setting it up for our heat mapping project. Following it straight through will probably take between 1-2 hours, including the time it takes to install certain packages. 
 
 Before you begin, it is helpful to download [**Raspberry Pi Imager**](https://www.raspberrypi.com/software/), [**PuTTY**](https://www.putty.org/), and [**VNC Viewer**](https://www.realvnc.com/en/connect/download/viewer/?lai_vid=3BnGRKjX1C6KJ&lai_sr=0-4&lai_sl=l&lai_p=1&lai_na=713940).
 
@@ -35,7 +35,7 @@ Go ahead and enable SSH under Services so we can connect using `user` `user` thr
 ![RaspberryPi Imager Customization Services](images/RaspberryPi_setup_OS_customization_services.png)
 
 
-It will take a few minutes to flash your SD Card. When it is complete, 
+It will take a few minutes to flash your SD Card. When it is complete, you can eject your SD card and insert it into your Raspberry Pi. 
 
 ### Connect to Raspberry Pi using PuTTY or with a monitor and keyboard.
 
@@ -68,7 +68,7 @@ In the termianl type
 sudo raspi-config
 ```
 
-The terminal will change to the *Raspberry Pi Software Configuration Tool (raspi-config)*. You will not be able to use your mouse cursor. Naviage with your directional keys on your keyboard. 
+The terminal will change to the *Raspberry Pi Software Configuration Tool (raspi-config)*. You will not be able to use your mouse cursor. Navigate with your directional keys on your keyboard. 
 
 ![raspi-config](images/raspi-config.png)
 
@@ -95,7 +95,7 @@ Press `Enter` on your keyboard. Select `<Yes>` to enable I2C interface.
 
 ![enable_i2c](images/i2c_enable.png)
 
-You may see the screen go back to the terminal. Then you will see a message saying ` The ARM I2C interface is enabled `. Click `<Ok>`
+You may see the screen go back to the terminal. Then you will see a message saying `The ARM I2C interface is enabled `. Click `<Ok>`
 
 
 
@@ -112,7 +112,7 @@ Select `<Yes>` to enable serial port hardware.
 
 ![serial](images/serial_port_hardware.png)
 
-You may see the screen go back to the terminal. Then you will see a message saying ` The serial login shell is disabled` and `The serial interface is enabled `. 
+You may see the screen go back to the terminal. Then you will see a message saying `The serial login shell is disabled` and `The serial interface is enabled `. 
  
 ![serial](images/serial_confirmation.png)
 
@@ -137,13 +137,13 @@ cd heat-project
 ```
 
 ### Create and activate a virtual environment
-We will use virtual environments to keep our python packages tidy and make it easier to share and troubleshoot. Run the following command to create your virtual environment named `env`. 
+We will use virtual environments to keep our python packages tidy and make it easier to share and troubleshoot. Run the following command to create your virtual environment named `env`. This can take a few minutes. 
 
 ```bash
 python -m venv env
 ```
 
-You will now see a new folder labeld `env` in the `heat_project` folder. This is your virtual environment. It will contain all the required Python libraries. 
+There is now a new folder labeld `env` in the `heat_project` folder. This is your virtual environment. It will contain all the required Python libraries. 
 
 From the `heat_project` folder. Run the following command to activate your virtual environment. 
 
@@ -165,24 +165,31 @@ pip install -r requirements.txt
 ```
 Be on the lookout for any errors. 
 
-### Check to ensure I^2^C is configured. 
+Run Blinka Test ***Instructions coming soon.*** Not necesary yet. 
 
-Check I2C and SPI
+# Connecting Sensors
+Follow the [wiring diagram]() to connect all the sensors and then proceed. It is a good practice to turn the Pi off if you are unplugging or plugging in any sensors. 
+
+## Connecting Temperature Sensor
+
+Check to make sure I2C is enabled by running the following command. 
 
 ```bash
 ls /dev/i2c\* 
 ```
-
 You should see that the Pis is searching for devices at the following locations, `/dev/i2c-1 /dev/i2c-2`. You may only see one, that should be fine. 
 
-Blinka Test
 
+If you followed the instructions above and connected your temperature/humidity sensor you can run a test script to see if the sensor is working. Navigate to your `heat_project` directory. Make sure your virtual environment is active. In the test_scirpts folder, there is a `read_sht30.py` script. 
 
-# Connecting Sensors
+```bash 
+cd heat_project
+source env/bin/activate
+python test_scripts/read_sht30.py
+```
+![read_sht30.py](images/test_sht30.png)
 
-To start working with sensors we need to
-
-## Connecting Temperature Sensor
+`Ctrl+C` to exit. 
 
 ## Connecting GPS Module
 
@@ -315,15 +322,15 @@ If you just rebooted the machine or are in the root directory. You will need to 
 
 So starting from the top. Open the `heat_project` directory.
 
-```
+```bash
 cd heat_project
 ```
 Activate your virtual environment. 
-```
+```bash
 source env/bin/activate
 ```
 Run the Python script.
-```
+```bash
 python src/capture_data.py
 ```
 
