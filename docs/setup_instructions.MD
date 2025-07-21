@@ -1,4 +1,5 @@
-This document will walk you through installation of a Raspberry Pi and setting it up for our heat mapping project. Following it straight through will probably take between 1-2 hours, including the time it takes to install certain packages. 
+# Setup Instructions
+This document will walk you through installation of a Raspberry Pi and setting it up for our heat mapping project. Following it straight through will probably take between 1-2 hours, including the time it takes to install certain packages and run updates. 
 
 Before you begin, it is helpful to download [**Raspberry Pi Imager**](https://www.raspberrypi.com/software/), [**PuTTY**](https://www.putty.org/), and [**VNC Viewer**](https://www.realvnc.com/en/connect/download/viewer/?lai_vid=3BnGRKjX1C6KJ&lai_sr=0-4&lai_sl=l&lai_p=1&lai_na=713940).
 
@@ -168,7 +169,9 @@ Be on the lookout for any errors.
 Run Blinka Test ***Instructions coming soon.*** Not necesary yet. 
 
 # Connecting Sensors
-Follow the [wiring diagram]() to connect all the sensors and then proceed. It is a good practice to turn the Pi off if you are unplugging or plugging in any sensors. 
+Follow the [wiring diagram](images/wiring_diagram.png) to connect all the sensors and then proceed. It is a good practice to turn the Pi off if you are unplugging or plugging in any sensors. 
+
+![WiringDiagram](images/wiring_diagram.png)
 
 ## Connecting Temperature Sensor
 
@@ -333,6 +336,8 @@ Run the Python script.
 ```bash
 python src/capture_data.py
 ```
+# Retrieving Data
+Data is written to `heat_project/data` folder. I found it easiest to use a file sharing through Samba. This permits sharing between Windows and Linux machines. You can find instructions for how to enable that [here](enabling_samba.md).
 
 # Executing Scripts
 
