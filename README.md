@@ -54,7 +54,7 @@ python src/capture_data.py
 
 ## 🛠 Hardware Setup
 Here is a basic wiring diagram for connecting the sensors to the 
-![WiringDiagram](docs/images/)
+![WiringDiagram](docs/images/wiring_diagram.png)
 
 For temperature and humidity, we use **I<sup>2</sup>C** communication for the SHT3x sensors. 
 
