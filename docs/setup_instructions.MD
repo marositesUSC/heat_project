@@ -1,4 +1,4 @@
-This document will walk you through installation of a Raspberry Pi and setting it up for our heat mapping project.
+This document will walk you through installation of a Raspberry Pi and setting it up for our heat mapping project. Following it straight through will probably take between 1-2 hours. 
 
 Before you begin, it is helpful to download [**Raspberry Pi Imager**](https://www.raspberrypi.com/software/), [**PuTTY**](https://www.putty.org/), and [**VNC Viewer**](https://www.realvnc.com/en/connect/download/viewer/?lai_vid=3BnGRKjX1C6KJ&lai_sr=0-4&lai_sl=l&lai_p=1&lai_na=713940).
 
@@ -165,76 +165,18 @@ pip install -r requirements.txt
 ```
 Be on the lookout for any errors. 
 
-### Check to ensure I^2^C and SPI are configured. 
+### Check to ensure I^2^C is configured. 
 
 Check I2C and SPI
 
 ```bash
-ls /dev/i2c\* /dev/spi\*
+ls /dev/i2c\* 
 ```
 
-You should see that the Pis is searching for devices at the following locations, `/dev/i2c-1 /dev/i2c-2 /dev/spidev0.0 /dev/spidev0.1`
+You should see that the Pis is searching for devices at the following locations, `/dev/i2c-1 /dev/i2c-2`. You may only see one, that should be fine. 
 
 Blinka Test
 
-## Enable File Sharing with Samba
-Samba creates a network share on your Raspberry Pi so we can easily pull data or files from it. To install run this command...
-
-```bash
-sudo apt-get install samba samba-common-bin
-```
-We need to edit the configiguration file. `nano` opens a text editor. It is super handy. You will notice your mouse will not work, and you will have to manouver through the file with your keyboard. 
-```bash
-sudo nano /etc/samba/smb.conf
-```
-
-Paste the follow into the file.
-
-```
-[PiShare]
-    comment=Pi Share
-    path=/home/pi
-    browseable=yes
-    writeable=yes
-    read only=no
-    guest ok=no
-    valid users=user
-    force user=user
-    create mask=0664
-    directory mask=0775
-    # Optional: recycle bin for deleted files
-    # vfs objects = recycle
-    # recycle:repository = .recycle/%U
-    # recycle:keeptree = yes
-    # recycle:versions = yes
-    # recycle:maxsize = 0
-```
-To save your file from `nano` hit ctrl+???
-
-
-Check the status of the samba service.
-
-``` bash
-sudo service smbd status
-```
-
-Set password and restart. Just match the username and password of the Pi.
-
-```bash
-sudo smbpasswd -a user
-
-user
-
-user
-```
-
-Restart the Samba Service.
-
-```bash 
-sudo systemctl restart smbd nmbd
-```
-
-Now you can open file explorer on your windows machine and view all the files in the home directory.
 
 # Connecting Sensors
 
@@ -252,14 +194,13 @@ ls /dev/serial0
 
 `dev/serial0` is a good response. 
 
-
-Now you can see the *raw* data the GPS module is passing over serial.
+If you have the GPS Module connected, you can see the *raw* data the GPS module is passing over serial by running the following command. 
 
 ```bash
 sudo cat /dev/serial0
 ```
 
-To process that serial data, you need to install some software that understand the serial data.
+To process that serial data, you need to install some software that understand the serial data and can parse it correctly.
 
 Install gpsd. *This will take a few minutes.*
 
@@ -275,19 +216,22 @@ sudo systemctl stop gpsd.socket
 sudo systemctl disable gpsd.socket
 ```
 
-After disabling the service, now we want to run it manually.
+After disabling the service, now we want to run it manually. The following command specifies the gpsd service will read data from the serial device and write it to the socket file. 
+
 ```bash
 sudo gpsd /dev/serial0 -F /var/run/gpsd.sock
 ```
-Now you can run the following command to get data.
+Now you can run the following command to get data. This command is handy and you can run it at any time.
 
 ```bash
 cgps -s
 ```
 
+![cgps](images/gps.png)
+
 `Ctrl + C` to exit.
 
-And now we want this to start automatically on boot. So we must create an override file for the gpsd service.
+Now we want this to start automatically on boot. So we must create an override file for the gpsd service.
 
 ```bash
 sudo systemctl edit gpsd.service
@@ -366,6 +310,22 @@ Now we can proceed to data logging.
 
 # Datalogging
 Now that everything is working. We can kick off our `capture_data.py` scripts to start writing data. 
+
+If you just rebooted the machine or are in the root directory. You will need to change directories to the `heat_project` folder. The `capture_data.py` script is in the `src` folder. Before you run the file, you must activate your virtual environment. 
+
+So starting from the top. Open the `heat_project` directory.
+
+```
+cd heat_project
+```
+Activate your virtual environment. 
+```
+source env/bin/activate
+```
+Run the Python script.
+```
+python src/capture_data.py
+```
 
 # Executing Scripts
 
