@@ -296,8 +296,9 @@ sudo systemctl edit gpsd.service
 Copy the following at the top of the file between two comments that say `Anything between here and the comment below will become the new contents of>` and `### Lines below this comment will be discarded`.
 
 ```
-\[Service\]
-ExecStart= ExecStart=/usr/sbin/gpsd /dev/serial0 -F /var/run/gpsd.sock
+[Service]
+ExecStart=
+ExecStart=/usr/sbin/gpsd /dev/serial0 -F /var/run/gpsd.sock
 Restart=on-failure
 RestartSec=10
 User=gpsd
