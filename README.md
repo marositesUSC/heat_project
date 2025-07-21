@@ -16,6 +16,7 @@ heat-project/
  | |--- capture_data.py         <-- Main Script
  |--- test_scripts/             <-- tests
  |--- data/                     <-- Data Repo
+ |--- logs/
  |--- docs/                     
  | |--- setup_instructions.md   <-- Setup instructions
  | |--- images/
@@ -27,7 +28,7 @@ heat-project/
 
 
 ## 🚀 Quick Start
-If you have a Raspberry Pi all set up, you can start here. Otherwise, start [here](docs/setup_instructions.MD).
+If you have a Raspberry Pi all set up, you can follow the instructions below. Otherwise, start [here](docs/setup_instructions.MD) to set up your Pi and install all the dependencies.
 ### 1. Clone the repository
 
 ```bash
@@ -39,7 +40,7 @@ cd heat-project
 python -m venv env
 source env/bin/activate
 ```
-After you activate your virtual environment you should notice `(env)` in your console. Keep it activated now, but if you want, you can deactivate your virtual environment by running `deactivate`.
+After you activate your virtual environment you should notice `(env)` in your console. Keep it activated now, but if you want, you can deactivate your virtual environment by running the command `deactivate`.
 
 ### 3. Install Dependencies
 ```bash 

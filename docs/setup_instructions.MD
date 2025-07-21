@@ -61,26 +61,67 @@ You can let it sit or watch the screen, it will likely take a few minutes.
 **this could take 15 to 30 minutes dependening on your network.*
 
 ### Open Raspberry Pi Software Configuration Tool 
-Next we need to inable some interface options so we can remote into the machine and communicate with sensors. 
+Next we need to enable some interface options so we can remote into the machine and communicate with sensors. 
 
 In the termianl type 
 ```bash
-raspi-config
+sudo raspi-config
 ```
 
+The terminal will change to the *Raspberry Pi Software Configuration Tool (raspi-config)*. You will not be able to use your mouse cursor. Naviage with your directional keys on your keyboard. 
+
+![raspi-config](images/raspi-config.png)
+
+
 ### Enable VNC (to access it remotely through VNC Viewer).
-Navigate to ___
+Navigate to `Interface Options`. Move down to **VNC**. 
 
-### Enable I<sup>2</sup>C (two-wire serial communication protocol used to connect temp and humidity sensors).
-Navigate to ___
+![vnc](images/vnc.png)
 
-### Enable Serial (serial interface for GPS).
-Navigate to ___
+Press `Enter` on your keyboard. Select `<Yes>` to enable VNC. 
+
+![enable_vnc](images/vnc_enable.png)
+
+You may see the screen go back to the terminal. Then you will see a message saying `The VNC Server is enabled`. Click `<Ok>`
+
+
+
+### Enable I<sup>2</sup>C (two-wire serial communication protocol used to connect the temperature and humidity sensors).
+Navigate to `Interface Options`. Move down to **I2C**. 
+
+![i2c](images/i2c.png)
+
+Press `Enter` on your keyboard. Select `<Yes>` to enable I2C interface. 
+
+![enable_i2c](images/i2c_enable.png)
+
+You may see the screen go back to the terminal. Then you will see a message saying ` The ARM I2C interface is enabled `. Click `<Ok>`
+
+
+
+### Enable Serial Interface for GPS.
+Navigate to `Interface Options`. Move down to **Serial Port**. 
+
+![serial](images/serial.png)
+
+Press `Enter` on your keyboard. Select `<No>` to enabling the login shell.
+
+![serial](images/serial_loginshell.png)
+
+Select `<Yes>` to enable serial port hardware. 
+
+![serial](images/serial_port_hardware.png)
+
+You may see the screen go back to the terminal. Then you will see a message saying ` The serial login shell is disabled` and `The serial interface is enabled `. 
+ 
+![serial](images/serial_confirmation.png)
+
+Click `<Ok>`. Now you are free to select `<Finish>`
 
 ### Reboot
 If you are prompted, you can reboot the Pi. If not it is good practice to reboot now. Run the command `sudo restart`. 
 
-### Clone the directory from GitHub
+## Clone the directory from GitHub
 Once the Pi has restarted. Log in using PuTTy just as before. In the terminal you will be in the root directory for your user. If you are curious about what is in your current working directory, run the `ls` command to list all files and folders. 
 
 We will use git to clone our directory from online. 
@@ -88,27 +129,31 @@ We will use git to clone our directory from online.
 ```bash
 git clone https://github.com/marositesUSC/heat_project.git
 ```
+
 Now if you run `ls` you will see a new folder named `heat_project`. Next you will run the `cd` command to move into our `heat_project` folder. 
+
 ```bash
 cd heat-project
 ```
 
 ### Create and activate a virtual environment
 We will use virtual environments to keep our python packages tidy and make it easier to share and troubleshoot. Run the following command to create your virtual environment named `env`. 
+
 ```bash
 python -m venv env
 ```
+
 You will now see a new folder labeld `env` in the `heat_project` folder. This is your virtual environment. It will contain all the required Python libraries. 
 
 From the `heat_project` folder. Run the following command to activate your virtual environment. 
+
 ```bash
 source env/bin/activate
 ```
-![Virtual_environment](images/virtual_env_actiavate.png)
-
-
 
 You will notice your environment out infront of your user@sensorname:
+
+![Virtual_environment](images/virtual_env_actiavate.png)
 
 You can deactivate the virtual environment by running the command `deactive` in the terminal, but keep it **activate** for now so we can install the dependencies and activate it any time in the future when you are trying to run our Python Scripts. 
 
@@ -145,11 +190,30 @@ sudo nano /etc/samba/smb.conf
 
 Paste the follow into the file.
 
-Check the status of the samba service.
-``` 
-Need to come back to enter code. 
+```
+[PiShare]
+    comment=Pi Share
+    path=/home/pi
+    browseable=yes
+    writeable=yes
+    read only=no
+    guest ok=no
+    valid users=user
+    force user=user
+    create mask=0664
+    directory mask=0775
+    # Optional: recycle bin for deleted files
+    # vfs objects = recycle
+    # recycle:repository = .recycle/%U
+    # recycle:keeptree = yes
+    # recycle:versions = yes
+    # recycle:maxsize = 0
 ```
 To save your file from `nano` hit ctrl+???
+
+
+Check the status of the samba service.
+
 ``` bash
 sudo service smbd status
 ```
@@ -189,7 +253,7 @@ ls /dev/serial0
 `dev/serial0` is a good response. 
 
 
-Now you can see the raw data the GPS module is passing over serial.
+Now you can see the *raw* data the GPS module is passing over serial.
 
 ```bash
 sudo cat /dev/serial0
@@ -197,14 +261,14 @@ sudo cat /dev/serial0
 
 To process that serial data, you need to install some software that understand the serial data.
 
-Install gpsd
+Install gpsd. *This will take a few minutes.*
 
 ```bash
 sudo apt-get install gpsd gpsd-clients
 ```
 `Y`  to continue
 
-We need to stop gpsd sockets and then disable them.
+We need to stop gpsd sockets and then disable them so we can manually start the process.
 
 ```bash
 sudo systemctl stop gpsd.socket
@@ -218,7 +282,7 @@ sudo gpsd /dev/serial0 -F /var/run/gpsd.sock
 Now you can run the following command to get data.
 
 ```bash
-gps -s
+cgps -s
 ```
 
 `Ctrl + C` to exit.
@@ -229,7 +293,7 @@ And now we want this to start automatically on boot. So we must create an overri
 sudo systemctl edit gpsd.service
 ```
 
-Copy the following at the top of the file between two comments that say below this and above that.
+Copy the following at the top of the file between two comments that say `Anything between here and the comment below will become the new contents of>` and `### Lines below this comment will be discarded`.
 
 ```
 \[Service\]
@@ -263,6 +327,12 @@ Check the status
 ```bash
 sudo systemctl status gpsd.service
 ```
+Look to see that it is enabled and active. It should look like the following.
+
+![gpsd_service_status](images/gpsd_service_status.png)
+
+`Cntl+C` to exit. 
+
 If issues arise examine the journal logs for gpsd.service
 ```bash
 journalctl -xeu gpsd.service
