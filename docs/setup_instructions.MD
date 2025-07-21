@@ -346,7 +346,7 @@ Reconnect using PuTTY
 
 Now you should be able to run `cgps -s` when you are logged back in. If your GPSModule is flashing once every ~15 seconds, it has a gps fix. If you do not see any data in your terminal there may be an issue.
 
-Finally we need to make some changes to make sure we can parse the data with python.
+Finally we can test to make sure we can parse the GPS data.
 
 Reboot the machine
 ```bash
@@ -356,8 +356,12 @@ Activate your virtual environment
 ```bash
 cd heat_project
 source env/bin/activate
-pip install gpsd-py3
+cd test_scripts/
+python gps_logging.py
 ```
+
+You should see that the Raspberry Pi is connecting to the GPS module, parsing the data, and writing to a log file. 
+
 Now we can proceed to data logging.
 
 # Datalogging

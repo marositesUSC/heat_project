@@ -1,0 +1,11 @@
+# This file documents what test scripts have been deprecated and why. 
+
+
+data_logger.py 		- Good but old style. Not robust. 
+data_logger_old.py 	- Same
+gpstest.py  		- File uses gps library instead of gpsd. No longer used. 
+
+
+#####################
+raspi-blinka.py		- pulled from online. Not good for our setup. 
+raspi-spi-reassign.py 	- pulled from online. 
