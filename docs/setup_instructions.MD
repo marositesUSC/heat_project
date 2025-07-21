@@ -293,7 +293,7 @@ And now we want this to start automatically on boot. So we must create an overri
 sudo systemctl edit gpsd.service
 ```
 
-Copy the following at the top of the file between two comments that say `Anything between here and the comment below will become the new contents of>` and `### Lines below this comment will be discarded`.
+Copy the following at the top of the file between two comments that say `### Anything between here and the comment below will become the new contents of>` and `### Lines below this comment will be discarded`.
 
 ```
 [Service]
