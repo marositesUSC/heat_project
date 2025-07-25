@@ -117,7 +117,7 @@ def setup_sht():
         logging.info("SHT4x sensor (e.g. SHT45) object created")
         GPIO.output(LED_SHT_STATUS_PIN, GPIO.HIGH) # Turn on SHT LED
     except ValueError:
-        logging.warning("SHT4x not found at default address. Attempting to initialize SHT3x.")
+        logging.warning("SHT4x not found at default address 0x44. Attempting to initialize SHT3x.")
         try:
             # If SHT4x not found, try SHT3x
             # Create the SHT31D sensor object
