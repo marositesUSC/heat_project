@@ -22,13 +22,13 @@ import csv
 
 # Sensor-specific imports
 import board
-import adafruit_sht31d
-import busio
-import gpsd
+import adafruit_sht31d  # For SHT30
+import adafruit_sht4x   # For SHT45
+import busio            
+import gpsd             # For GPS
 import RPi.GPIO as GPIO # For I/O ~ LEDs
 
 # --- Configuration ---
-# Define the base directory for your project
 # IMPORTANT: Adjust this path if your project is not in /home/user/heat_project
 BASE_PROJECT_DIR = "/home/user/heat_project"
 
@@ -45,6 +45,7 @@ LED_LOGGING_STATUS_PIN = 21
 
 # --- Global Sensor Objects (initialized in main) ---
 sht_sensor = None
+i2c = None
 
 # --- Setup Logging (for operational messages) ---
 # Ensure the log directories exist before setting up logging or writing data
@@ -98,12 +99,12 @@ def setup_gpio():
 # --- Sensor Setup Functions ---
 
 def setup_sht():
-    """Initializes the SHT31D temperature/humidity sensor."""
-    global sht_sensor # Declare that we're modifying the global sht_sensor object
+    """Initializes the SHT3x or SHT4x temperature/humidity sensor."""
+    global sht_sensor, i2c # Declare that we're modifying the global sht_sensor and i2c objects
     try:
         # Create the I2C bus
         i2c = busio.I2C(board.SCL, board.SDA)
-        logging.info("I2C bus initialized successfully for SHT31D.")
+        logging.info("I2C bus initialized successfully for SHT sensors.")
     except Exception as e:
         logging.error(f"Error initializing I2C bus: {e}")
         logging.error("Please ensure I2C is enabled and wired correctly.")
@@ -111,18 +112,30 @@ def setup_sht():
         raise # Re-raise the exception to stop execution if I2C fails
 
     try:
-        # Create the SHT31D sensor object
-        sht_sensor = adafruit_sht31d.SHT31D(i2c)
-        logging.info("SHT31D sensor object created.")
+        # Attempt to create SHT4x sensor
+        sht_sensor = adafruit_sht4x.SHT4x(i2c)
+        logging.info("SHT4x sensor (e.g. SHT45) object created")
         GPIO.output(LED_SHT_STATUS_PIN, GPIO.HIGH) # Turn on SHT LED
     except ValueError:
-        logging.error("SHT31D not found at default address 0x44.")
-        logging.error("Check wiring and run 'sudo i2cdetect -y 1'.")
-        GPIO.output(LED_SHT_STATUS_PIN, GPIO.LOW) # Turn off SHT LED on error
-        raise # Re-raise
+        logging.warning("SHT4x not found at default address. Attempting to initialize SHT3x.")
+        try:
+            # If SHT4x not found, try SHT3x
+            # Create the SHT31D sensor object
+            sht_sensor = adafruit_sht31d.SHT31D(i2c)
+            logging.info("SHT31D sensor object created.")
+            GPIO.output(LED_SHT_STATUS_PIN, GPIO.HIGH) # Turn on SHT LED
+        except ValueError:
+            logging.error("SHT31D not found at default address 0x44.")
+            logging.error("Check wiring and run 'sudo i2cdetect -y 1'.")
+            GPIO.output(LED_SHT_STATUS_PIN, GPIO.LOW) # Turn off SHT LED on error
+            raise # Re-raise
+        except Exception as e:
+            logging.error(f"An unexpected error occurred while creating SHT31D sensor object: {e}")
+            GPIO.output(LED_SHT_STATUS_PIN, GPIO.LOW) # Turn off SHT LED on error
+            raise # Re-raise
     except Exception as e:
-        logging.error(f"An unexpected error occurred while creating SHT31D sensor object: {e}")
-        GPIO.output(LED_SHT_STATUS_PIN, GPIO.LOW) # Turn off SHT LED on error
+        logging.error(f"An unexpected error occurred while creating SHT4x sensor object: {e}")
+        GPIO.output(LED_SHT_STATUS_PIN, GPIO.LOW)
         raise # Re-raise
     logging.info("-" * 30)
 
