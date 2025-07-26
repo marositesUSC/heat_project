@@ -5,7 +5,8 @@
 Filename: datalogger.py
 Author: Ben Marosites
 Email: marosite@email.sc.edu
-Date: 2025-06-22 (Updated for LED flash: 2025-06-22, 17:54 EDT)
+Date: 2025-06-22 
+Update Date: 2025-07-25
 Version: 0.8 - SHT4x support.
 Description: This script collects temp, humidity, and GPS location data and writes that to a CSV file.
              It uses system's UTC time for primary timestamp and logs operational messages separately.
