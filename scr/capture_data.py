@@ -6,7 +6,7 @@ Filename: datalogger.py
 Author: Ben Marosites
 Email: marosite@email.sc.edu
 Date: 2025-06-22 (Updated for LED flash: 2025-06-22, 17:54 EDT)
-Version: 0.6 - Logging LED flashes on successful write.
+Version: 0.8 - SHT4x support.
 Description: This script collects temp, humidity, and GPS location data and writes that to a CSV file.
              It uses system's UTC time for primary timestamp and logs operational messages separately.
              Data is stored in a 'data' subfolder, operational logs in a 'logs' subfolder.
@@ -260,7 +260,7 @@ def log_data():
                     csv_writer.writerow(data_row)
                     csvfile.flush() # Ensure data is written to disk immediately
                     os.fsync(csvfile.fileno()) # Force OS to write to physical disk
-                    logging.info(f"Data logged to CSV: T={temperature}C, H={humidity}%, GPS_TS={gps_timestamp_utc}")
+                    logging.info(f"Data logged to CSV: T={temperature:.2f}C, H={humidity:.2f}%, GPS_TS={gps_timestamp_utc}")
 
                     # --- Logging LED Flash ---
                     GPIO.output(LED_LOGGING_STATUS_PIN, GPIO.HIGH) # Turn on logging LED
