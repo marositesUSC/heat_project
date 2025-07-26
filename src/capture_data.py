@@ -263,7 +263,7 @@ def log_data():
                     csv_writer.writerow(data_row)
                     csvfile.flush() # Ensure data is written to disk immediately
                     os.fsync(csvfile.fileno()) # Force OS to write to physical disk
-                    logging.info(f"Data logged to CSV: T={temperature:.2f}C, H={humidity:.2f}%, GPS_TS={gps_timestamp_utc}")
+                    logging.info(f"Data logged to CSV: T={temperature:.2f}C, H={humidity:.2f}%, GPS_TS={gps_timestamp_utc}" if isinstance(temperature, float) else f"Data logged to CSV: T={temperature}C, H={humidity}%, GPS_TS={gps_timestamp_utc}")
 
                     # --- Logging LED Flash ---
                     GPIO.output(LED_LOGGING_STATUS_PIN, GPIO.HIGH) # Turn on logging LED

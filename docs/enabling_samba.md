@@ -4,12 +4,15 @@ Samba creates a network share on your Raspberry Pi so we can easily pull data or
 ```bash
 sudo apt-get install samba samba-common-bin
 ```
-We need to edit the configiguration file. `nano` opens a text editor. It is super handy. You will notice your mouse will not work, and you will have to manouver through the file with your keyboard. 
+If you run into any issues with the install, try to rerun the install command. 
+
+
+We need to edit the configiguration file. `nano` opens a text editor. It is super handy. You will notice your mouse will not work, and you will have to manouver through the file with your keyboard. There are some shortcuts, but `ctrl+x` is important for closing your file.  
 ```bash
 sudo nano /etc/samba/smb.conf
 ```
 
-Paste the follow into the file.
+Paste the follow into the file at the very bottom. 
 
 ```
 [PiShare]
