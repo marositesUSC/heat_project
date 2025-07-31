@@ -22,6 +22,7 @@ import time
 import datetime
 import logging
 import csv
+import platform # import socket
 
 # Sensor-specific imports
 import board
@@ -58,6 +59,7 @@ os.makedirs(CSV_DATA_DIR, exist_ok=True)
 # Generate a timestamped filename for the *operational log file*
 current_datetime_str = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
 OPERATIONAL_LOG_FILE = os.path.join(OPERATIONAL_LOGS_DIR, f"datalogger_operational_{current_datetime_str}.log")
+
 
 logging.basicConfig(
     filename=OPERATIONAL_LOG_FILE, # This log is for script operations/errors, NOT data
@@ -171,10 +173,22 @@ def log_data():
 
     # Define CSV header
     csv_header = [
-        "System_Timestamp_UTC", "Temperature_C", "Humidity_RH",
+        "System_Timestamp_UTC", "RaspberryPiName", "Sensor_ID",  "Temperature_C", "Humidity_RH",
         "GPS_Timestamp_UTC", "Latitude", "Longitude", "Altitude_m", "Speed_mps",
         "Climb_mps", "Track_deg", "Satellites", "GPS_Fix_Type"
     ]
+
+    # Get Raspberry Pi hostname
+    pi_name = platform.node()  # This is more portable than socket.gethostname()
+    logging.info(f"Raspberry Pi hostname: {pi_name}")
+
+    # Determine sensor ID based on type
+    sensor_id = "UNKNOWN SHT"
+    if sht_sensor:
+        if isinstance(sht_sensor, adafruit_sht4x.SHT4x):
+            sensor_id = "SHT4x"
+        elif isinstance(sht_sensor, adafruit_sht31d.SHT31D):
+            sensor_id = "SHT31D"
 
     # Open CSV file and write header (only if file is new)
     # Using 'with' statement ensures the file is properly closed even if errors occur
@@ -188,12 +202,14 @@ def log_data():
 
             while True: # Loop indefinitely until interrupted (e.g., by Ctrl+C)
                 # --- Get System UTC Timestamp ---
-                # This is the timestamp of when the data was collected by the Pi
+                # This is the timestamp of when the data was collected by the Pi 
+                # If Pis are not connected to the internet they will have a bad time stamp, so beware!)
                 system_timestamp_utc = datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S UTC")
 
-                # --- Read SHT31D Data ---
+                # --- Read SHT Data ---
                 temperature = "N/A"
                 humidity = "N/A"
+                sensor_id = "N/A"
                 try:
                     if sht_sensor: # Check if sensor was initialized successfully
                         temperature = sht_sensor.temperature
@@ -202,6 +218,7 @@ def log_data():
                         logging.warning("SHT31D sensor not initialized. Skipping temperature/humidity data.")
                 except Exception as e:
                     logging.error(f"Error reading SHT31D sensor: {e}")
+                    sensor_id = "READ_ERROR"
                     temperature = "READ_ERROR"
                     humidity = "READ_ERROR"
 
@@ -251,6 +268,8 @@ def log_data():
                 # --- Prepare Data Row for CSV ---
                 data_row = [
                     system_timestamp_utc, # Primary timestamp from Pi's system clock (UTC)
+                    pi_name, # Raspberry Pi hostname
+                    sensor_id, # Sensor ID based on type
                     f"{temperature:.2f}" if isinstance(temperature, float) else temperature,
                     f"{humidity:.2f}" if isinstance(humidity, float) else humidity,
                     gps_timestamp_utc,
