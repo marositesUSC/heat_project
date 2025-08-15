@@ -7,12 +7,12 @@ Author: Ben Marosites
 Email: marosite@email.sc.edu
 Date: 2025-06-22 
 Update Date: 2025-07-30
-Version: 0.9
+Version: 1.0.0
 Description: This script collects temp, humidity, and GPS location data and writes that to a CSV file.
              It uses system's UTC time for primary timestamp and logs operational messages separately.
              Data is stored in a 'data' subfolder, operational logs in a 'logs' subfolder.
              Features: Logging LED flashes for 1 second on each data write.
-                       Support for SHT3x and SHT4x sensors.
+                       Support for SHT3x and SHT4x sensors and
                        Adafruit Ultimate GPS Module 
 """
 
