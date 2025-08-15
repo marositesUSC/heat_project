@@ -183,12 +183,17 @@ def log_data():
     logging.info(f"Raspberry Pi hostname: {pi_name}")
 
     # Determine sensor ID based on type
-    sensor_id = "UNKNOWN SHT"
-    if sht_sensor:
-        if isinstance(sht_sensor, adafruit_sht4x.SHT4x):
-            sensor_id = "SHT4x"
-        elif isinstance(sht_sensor, adafruit_sht31d.SHT31D):
-            sensor_id = "SHT31D"
+    try:
+        if sht_sensor:
+            if isinstance(sht_sensor, adafruit_sht4x.SHT4x):
+                sensor_id = sht_sensor.serial_number  # Use serial number for SHT4x sensors
+            elif isinstance(sht_sensor, adafruit_sht31d.SHT31D):
+                sensor_id = "SHT31D"
+            else:
+                sensor_id = "UNKNOWN" 
+    except Exception as e:
+        logging.error(f"Error determining sensor type: {e}")
+        sensor_id = "UNKNOWN"
 
     # Open CSV file and write header (only if file is new)
     # Using 'with' statement ensures the file is properly closed even if errors occur
@@ -209,7 +214,7 @@ def log_data():
                 # --- Read SHT Data ---
                 temperature = "N/A"
                 humidity = "N/A"
-                sensor_id = "N/A"
+                # sensor_id = "N/A"
                 try:
                     if sht_sensor: # Check if sensor was initialized successfully
                         temperature = sht_sensor.temperature
