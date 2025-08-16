@@ -51,6 +51,7 @@ pip install -r requirements.txt
 ```bash
 python src/capture_data.py
 ```
+If you want the script to run on boot, check out the instructions [here](docs/enabling_autostart.md). 
 
 ## 🛠 Hardware Setup
 Here is a basic wiring diagram for connecting the sensors to the 
@@ -61,4 +62,6 @@ For temperature and humidity, we use **I<sup>2</sup>C** communication for the SH
 For location data, we connect via **UHAT** to an Adafruit Ultimate GPS moduel and **GSPD**. 
 
 More setup details can be found in [docs/setup_instructions.md](docs/setup_instructions.md).
+
+If you have a working Pi, you can clone it to a new device. Follow these [instructions](docs/cloning_pis.md). 
 
