@@ -211,22 +211,6 @@ def log_data():
                 # If Pis are not connected to the internet they will have a bad time stamp, so beware!)
                 system_timestamp_utc = datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S UTC")
 
-                # --- Read SHT Data ---
-                temperature = "N/A"
-                humidity = "N/A"
-                # sensor_id = "N/A"
-                try:
-                    if sht_sensor: # Check if sensor was initialized successfully
-                        temperature = sht_sensor.temperature
-                        humidity = sht_sensor.relative_humidity
-                    else:
-                        logging.warning("SHT31D sensor not initialized. Skipping temperature/humidity data.")
-                except Exception as e:
-                    logging.error(f"Error reading SHT31D sensor: {e}")
-                    sensor_id = "READ_ERROR"
-                    temperature = "READ_ERROR"
-                    humidity = "READ_ERROR"
-
                 # --- Read GPS Data ---
                 packet = None
                 try:
@@ -269,6 +253,21 @@ def log_data():
                 else:
                     GPIO.output(LED_GPS_STATUS_PIN, GPIO.LOW) # Turn off GPS LED if no fix
                     logging.warning("Waiting for GPS fix or no GPS data available from gpsd...")
+
+                # --- Read SHT Data ---
+                temperature = "N/A"
+                humidity = "N/A"
+                try:
+                    if sht_sensor: # Check if sensor was initialized successfully
+                        temperature = sht_sensor.temperature
+                        humidity = sht_sensor.relative_humidity
+                    else:
+                        logging.warning("SHT31D sensor not initialized. Skipping temperature/humidity data.")
+                except Exception as e:
+                    logging.error(f"Error reading SHT31D sensor: {e}")
+                    temperature = "READ_ERROR"
+                    humidity = "READ_ERROR"
+
 
                 # --- Prepare Data Row for CSV ---
                 data_row = [
