@@ -6,13 +6,13 @@ Filename: datalogger.py
 Author: Ben Marosites
 Email: marosite@email.sc.edu
 Date: 2025-06-22 
-Update Date: 2025-07-25
-Version: 0.8 - SHT4x support.
+Update Date: 2025-07-30
+Version: 1.0.0
 Description: This script collects temp, humidity, and GPS location data and writes that to a CSV file.
              It uses system's UTC time for primary timestamp and logs operational messages separately.
              Data is stored in a 'data' subfolder, operational logs in a 'logs' subfolder.
              Features: Logging LED flashes for 1 second on each data write.
-                       Support for SHT3x and SHT4x sensors.
+                       Support for SHT3x and SHT4x sensors and
                        Adafruit Ultimate GPS Module 
 """
 
@@ -22,6 +22,7 @@ import time
 import datetime
 import logging
 import csv
+import platform # import socket
 
 # Sensor-specific imports
 import board
@@ -58,6 +59,7 @@ os.makedirs(CSV_DATA_DIR, exist_ok=True)
 # Generate a timestamped filename for the *operational log file*
 current_datetime_str = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
 OPERATIONAL_LOG_FILE = os.path.join(OPERATIONAL_LOGS_DIR, f"datalogger_operational_{current_datetime_str}.log")
+
 
 logging.basicConfig(
     filename=OPERATIONAL_LOG_FILE, # This log is for script operations/errors, NOT data
@@ -171,10 +173,27 @@ def log_data():
 
     # Define CSV header
     csv_header = [
-        "System_Timestamp_UTC", "Temperature_C", "Humidity_RH",
+        "System_Timestamp_UTC", "RaspberryPiName", "Sensor_ID",  "Temperature_C", "Humidity_RH",
         "GPS_Timestamp_UTC", "Latitude", "Longitude", "Altitude_m", "Speed_mps",
         "Climb_mps", "Track_deg", "Satellites", "GPS_Fix_Type"
     ]
+
+    # Get Raspberry Pi hostname
+    pi_name = platform.node()  # This is more portable than socket.gethostname()
+    logging.info(f"Raspberry Pi hostname: {pi_name}")
+
+    # Determine sensor ID based on type
+    try:
+        if sht_sensor:
+            if isinstance(sht_sensor, adafruit_sht4x.SHT4x):
+                sensor_id = sht_sensor.serial_number  # Use serial number for SHT4x sensors
+            elif isinstance(sht_sensor, adafruit_sht31d.SHT31D):
+                sensor_id = "SHT31D"
+            else:
+                sensor_id = "UNKNOWN" 
+    except Exception as e:
+        logging.error(f"Error determining sensor type: {e}")
+        sensor_id = "UNKNOWN"
 
     # Open CSV file and write header (only if file is new)
     # Using 'with' statement ensures the file is properly closed even if errors occur
@@ -188,22 +207,9 @@ def log_data():
 
             while True: # Loop indefinitely until interrupted (e.g., by Ctrl+C)
                 # --- Get System UTC Timestamp ---
-                # This is the timestamp of when the data was collected by the Pi
+                # This is the timestamp of when the data was collected by the Pi 
+                # If Pis are not connected to the internet they will have a bad time stamp, so beware!)
                 system_timestamp_utc = datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S UTC")
-
-                # --- Read SHT31D Data ---
-                temperature = "N/A"
-                humidity = "N/A"
-                try:
-                    if sht_sensor: # Check if sensor was initialized successfully
-                        temperature = sht_sensor.temperature
-                        humidity = sht_sensor.relative_humidity
-                    else:
-                        logging.warning("SHT31D sensor not initialized. Skipping temperature/humidity data.")
-                except Exception as e:
-                    logging.error(f"Error reading SHT31D sensor: {e}")
-                    temperature = "READ_ERROR"
-                    humidity = "READ_ERROR"
 
                 # --- Read GPS Data ---
                 packet = None
@@ -248,9 +254,26 @@ def log_data():
                     GPIO.output(LED_GPS_STATUS_PIN, GPIO.LOW) # Turn off GPS LED if no fix
                     logging.warning("Waiting for GPS fix or no GPS data available from gpsd...")
 
+                # --- Read SHT Data ---
+                temperature = "N/A"
+                humidity = "N/A"
+                try:
+                    if sht_sensor: # Check if sensor was initialized successfully
+                        temperature = sht_sensor.temperature
+                        humidity = sht_sensor.relative_humidity
+                    else:
+                        logging.warning("SHT31D sensor not initialized. Skipping temperature/humidity data.")
+                except Exception as e:
+                    logging.error(f"Error reading SHT31D sensor: {e}")
+                    temperature = "READ_ERROR"
+                    humidity = "READ_ERROR"
+
+
                 # --- Prepare Data Row for CSV ---
                 data_row = [
                     system_timestamp_utc, # Primary timestamp from Pi's system clock (UTC)
+                    pi_name, # Raspberry Pi hostname
+                    sensor_id, # Sensor ID based on type
                     f"{temperature:.2f}" if isinstance(temperature, float) else temperature,
                     f"{humidity:.2f}" if isinstance(humidity, float) else humidity,
                     gps_timestamp_utc,
