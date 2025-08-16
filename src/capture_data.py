@@ -107,7 +107,6 @@ def setup_sht():
     except Exception as e:
         logging.error(f"Error initializing I2C bus: {e}")
         logging.error("Please ensure I2C is enabled and wired correctly.")
-        GPIO.output(LED_SHT_STATUS_PIN, GPIO.LOW) # Turn off SHT LED on error
         raise # Re-raise the exception to stop execution if I2C fails
 
     try:
