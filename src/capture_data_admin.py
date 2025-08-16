@@ -43,7 +43,9 @@ CSV_DATA_DIR = os.path.join(BASE_PROJECT_DIR, "data")
 LOG_INTERVAL_SECONDS = 5  # How often to log data (in seconds)
 
 # --- LED Configuration ---
-LED = 21
+LED_SHT_STATUS_PIN = 16
+LED_GPS_STATUS_PIN = 20
+LED_LOGGING_STATUS_PIN = 21
 
 # --- Global Sensor Objects (initialized in main) ---
 sht_sensor = None
@@ -84,11 +86,15 @@ def setup_gpio():
         GPIO.setmode(GPIO.BCM) # Use Broadcom SOC channel numbering (GPIO numbers)
 
         # Setup LED pins as outputs
-        GPIO.setup(LED, GPIO.OUT)
+        GPIO.setup(LED_SHT_STATUS_PIN, GPIO.OUT)
+        GPIO.setup(LED_GPS_STATUS_PIN, GPIO.OUT)
+        GPIO.setup(LED_LOGGING_STATUS_PIN, GPIO.OUT)
         logging.info("LED GPIO pins set up.")
         
         # Turn off all LEDs initially
-        GPIO.output(LED, GPIO.LOW)
+        GPIO.output(LED_SHT_STATUS_PIN, GPIO.LOW)
+        GPIO.output(LED_GPS_STATUS_PIN, GPIO.LOW)
+        GPIO.output(LED_LOGGING_STATUS_PIN, GPIO.LOW)
 
     except Exception as e:
         logging.critical(f"Error setting up GPIO: {e}")
@@ -114,6 +120,7 @@ def setup_sht():
         # Attempt to create SHT4x sensor
         sht_sensor = adafruit_sht4x.SHT4x(i2c)
         logging.info("SHT4x sensor (e.g. SHT45) object created")
+        GPIO.output(LED_SHT_STATUS_PIN, GPIO.HIGH) # Turn on SHT LED
     except ValueError:
         logging.warning("SHT4x not found at default address 0x44. Attempting to initialize SHT3x.")
         try:
@@ -121,15 +128,19 @@ def setup_sht():
             # Create the SHT31D sensor object
             sht_sensor = adafruit_sht31d.SHT31D(i2c)
             logging.info("SHT31D sensor object created.")
+            GPIO.output(LED_SHT_STATUS_PIN, GPIO.HIGH) # Turn on SHT LED
         except ValueError:
             logging.error("SHT31D not found at default address 0x44.")
             logging.error("Check wiring and run 'sudo i2cdetect -y 1'.")
+            GPIO.output(LED_SHT_STATUS_PIN, GPIO.LOW) # Turn off SHT LED on error
             raise # Re-raise
         except Exception as e:
             logging.error(f"An unexpected error occurred while creating SHT31D sensor object: {e}")
+            GPIO.output(LED_SHT_STATUS_PIN, GPIO.LOW) # Turn off SHT LED on error
             raise # Re-raise
     except Exception as e:
         logging.error(f"An unexpected error occurred while creating SHT4x sensor object: {e}")
+        GPIO.output(LED_SHT_STATUS_PIN, GPIO.LOW)
         raise # Re-raise
     logging.info("-" * 30)
 
@@ -139,13 +150,16 @@ def setup_gps():
     try:
         gpsd.connect()
         logging.info("Connected to gpsd.")
+        GPIO.output(LED_GPS_STATUS_PIN, GPIO.HIGH) # Turn on GPS LED (initially connected)
     except ConnectionRefusedError:
         logging.error("Error: Could not connect to gpsd. Make sure gpsd is running.")
         logging.error("Try: sudo systemctl enable gpsd && sudo systemctl start gpsd")
         logging.error("Also check if a GPS device is connected and streaming data to gpsd.")
+        GPIO.output(LED_GPS_STATUS_PIN, GPIO.LOW) # Turn off GPS LED on error
         raise # Re-raise
     except Exception as e:
         logging.error(f"An unexpected error occurred while connecting to gpsd: {e}")
+        GPIO.output(LED_GPS_STATUS_PIN, GPIO.LOW) # Turn off GPS LED on error
         raise # Re-raise
 
 # --- Main Data Logging Function ---
@@ -218,6 +232,7 @@ def log_data():
 
                 # Update GPS data and status LED based on fix
                 if packet and packet.mode >= 2: # 2D fix (mode 2) or 3D fix (mode 3)
+                    GPIO.output(LED_GPS_STATUS_PIN, GPIO.HIGH) # Keep GPS LED on if fix
                     if packet.time:
                         try:
                             # Attempt to format the GPS timestamp
@@ -236,6 +251,7 @@ def log_data():
                     gps_fix_type = '3D' if packet.mode == 3 else '2D'
                     logging.info(f"GPS Fix: {gps_fix_type}, Lat: {latitude}, Lon: {longitude}")
                 else:
+                    GPIO.output(LED_GPS_STATUS_PIN, GPIO.LOW) # Turn off GPS LED if no fix
                     logging.warning("Waiting for GPS fix or no GPS data available from gpsd...")
 
                 # --- Read SHT Data ---
@@ -273,9 +289,9 @@ def log_data():
                     logging.info(f"Data logged to CSV: T={temperature:.2f}C, H={humidity:.2f}%, GPS_TS={gps_timestamp_utc}" if isinstance(temperature, float) else f"Data logged to CSV: T={temperature}C, H={humidity}%, GPS_TS={gps_timestamp_utc}")
 
                     # --- Logging LED Flash ---
-                    GPIO.output(LED, GPIO.HIGH) # Turn on logging LED
+                    GPIO.output(LED_LOGGING_STATUS_PIN, GPIO.HIGH) # Turn on logging LED
                     time.sleep(1) # Keep it on for 1 second
-                    GPIO.output(LED, GPIO.LOW) # Turn off logging LED
+                    GPIO.output(LED_LOGGING_STATUS_PIN, GPIO.LOW) # Turn off logging LED
 
                 except Exception as e:
                     logging.error(f"Error writing data row to CSV file: {e}")

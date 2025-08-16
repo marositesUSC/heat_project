@@ -1,18 +1,26 @@
+# Clone Rasperry Pi
 To clone your Raspberry Pi, use a memory card reader. I used a usb type b to sd card. 
 
-Remote into your Raspberry Pi. 
+1. Connect to your working Raspberry Pi. 
 
-Open the tools section. 
+2. Open the application menu. 
 
-Find Clone.
+3. Navigate to `Accessories>SD Card Copier`
 
-Find your cards name. 
+![SDCardCopier](images/SD_Card_Copier.png)
 
-Insert new card and memory card reader. 
+4. Find your cards name. By clicking the drop down beside `Copy From Device`. There should only be one listed and this will be your current working card. 
 
-Select the appropriate cloning operations. 
+5. Insert new card and memory card reader. 
 
-Wait. 
+6. Use the drop downs in the window to select your original SD card as the `Copy From Device`, and your fresh SD card as the `Copy To Device`. Click `Start`. 
 
-Rename new device. 
+7. Wait until the operation is complete. This typically takes between 10 and 20 minutes.
+![CopyComplete](images/) 
+
+8. Remove the cloned SD card from the reader and insert it into your new Raspberry Pi and boot it up. 
+
+9. Rename new device by opening `Terminal`, type `sudo raspi-config`, click `System Options`, click `S4 Hostname`, `OK`, and enter a new hostname. Click `Ok`, `Finish`, and reboot. 
+
+Please be sure to make sure your device is ready to start capturing data on boot up by following the [autostart instructions](enabling_autostart.md).
 
