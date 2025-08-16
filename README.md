@@ -4,6 +4,8 @@ This is a Python-based project to capture temperature and humidity data using a 
 
 ![Captured_data](docs/images/June25_data.png)
 
+This is part of a larger project to map heat across urban environments. 
+
 ![Biking](docs/images/initial_testing_01.jpg)
 
 
