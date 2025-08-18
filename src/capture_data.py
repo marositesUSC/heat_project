@@ -89,6 +89,8 @@ def setup_gpio():
         
         # Turn off all LEDs initially
         GPIO.output(LED, GPIO.LOW)
+        # Turn on LED to indicate setup complete
+        GPIO.output(LED, GPIO.HIGH)
 
     except Exception as e:
         logging.critical(f"Error setting up GPIO: {e}")
@@ -297,13 +299,11 @@ def log_data():
 
 if __name__ == "__main__":
     try:
+        logging.info("Starting datalogger application...")
         # Initialize GPIO for LEDs first
         setup_gpio()
-        time.sleep(3)  # Give GPIO time to settle
-        # Turn on LED for startup indication
-        GPIO.output(LED, GPIO.HIGH) # Turn on LED to indicate startup
-        logging.info("Starting datalogger application...")
-        
+        time.sleep(5)  # Give GPIO time to settle
+
         # Initialize sensors and services
         setup_sht()
         setup_gps()
