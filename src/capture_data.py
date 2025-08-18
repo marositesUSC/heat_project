@@ -299,6 +299,7 @@ if __name__ == "__main__":
     try:
         # Initialize GPIO for LEDs first
         setup_gpio()
+        time.sleep(3)  # Give GPIO time to settle
         # Turn on LED for startup indication
         GPIO.output(LED, GPIO.HIGH) # Turn on LED to indicate startup
         logging.info("Starting datalogger application...")
