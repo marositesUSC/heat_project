@@ -297,6 +297,9 @@ def log_data():
 
 if __name__ == "__main__":
     try:
+        # Turn on LED
+        GPIO.output(LED, GPIO.HIGH) # Turn on LED to indicate startup
+        logging.info("Starting datalogger application...")
         # Initialize GPIO for LEDs first
         setup_gpio()
         
