@@ -153,10 +153,17 @@ def setup_gps():
 
 def log_data():
     """Collects and logs sensor data continuously to a CSV file."""
+    # Get Raspberry Pi hostname
+    try:
+        pi_name = platform.node()  # This is more portable than socket.gethostname()
+        logging.info(f"Raspberry Pi hostname: {pi_name}")
+    except Exception as e:
+        logging.error(f"Error getting Raspberry Pi hostname: {e}")
+        pi_name = "sensor_data"
 
-    # Generate a timestamped filename for the *CSV data file*
+    # Generate a timestamped filename for the *CSV data file* using the rasperry pi's name and current datetime
     csv_datetime_str = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-    CSV_DATA_FILE = os.path.join(CSV_DATA_DIR, f"sensor_data_{csv_datetime_str}.csv")
+    CSV_DATA_FILE = os.path.join(CSV_DATA_DIR, f"{pi_name}_{csv_datetime_str}.csv")
 
     # Define CSV header
     csv_header = [
@@ -164,10 +171,6 @@ def log_data():
         "GPS_Timestamp_UTC", "Latitude", "Longitude", "Altitude_m", "Speed_mps",
         "Climb_mps", "Track_deg", "Satellites", "GPS_Fix_Type"
     ]
-
-    # Get Raspberry Pi hostname
-    pi_name = platform.node()  # This is more portable than socket.gethostname()
-    logging.info(f"Raspberry Pi hostname: {pi_name}")
 
     # Determine sensor ID based on type
     try:
