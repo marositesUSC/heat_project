@@ -49,10 +49,12 @@ def update_filenames(input_directory, output_directory = None):
 
 
 if __name__ == "__main__":
-    input_dir = r'C:\Users\bmaro\OneDrive - University of South Carolina\Columbia Heat Project\heat_mapping\raw_files'
+    input_dir = r'C:\Users\bmaro\OneDrive\Desktop\New folder (2)\post'
     update_filenames(input_dir)
 
 
 
 
-
+# d = r"C:\Users\bmaro\OneDrive - University of South Carolina\Columbia Heat Project\heat_mapping\Raw_files\sensor_data_20250818_205431.csv"
+# data = pd.read_csv(d)
+# print(data)
